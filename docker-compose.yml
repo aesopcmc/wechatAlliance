@@ -4,20 +4,22 @@ services:
 
   db:
     image: mysql:5.7.27
+    container_name: mpg_mysql
     volumes:
       - db_data:/var/lib/mysql
     restart: always
     environment:
       # 设置你需要的数据库账号密码，数据库名固定位love_wall请不要修改，注意需要冒号前空格
-      MYSQL_ROOT_PASSWORD:
+      MYSQL_ROOT_PASSWORD: love_wall.123456
       MYSQL_DATABASE: love_wall
       MYSQL_USER: root
-      MYSQL_PASSWORD:
+      MYSQL_PASSWORD: love_wall.123456
     networks:
       - laravel_net
 
   laravel:
     image: oubingbing/wechat_alliance_fpm:fix_ali_face
+    container_name: mpg_laravel
     restart: always
     networks:
       - laravel_net
@@ -25,16 +27,16 @@ services:
       - db
     environment:
       # 项目域名，例如：https://love.qiuhuiyi.cn
-      APP_URL:
+      APP_URL: https://mpg.sentgon.com
       # 填上上面你填写的数据库账号密码
-      DB_USERNAME:
-      DB_PASSWORD:
+      DB_USERNAME: root
+      DB_PASSWORD: love_wall.123456
       # 七牛配置信息
-      QI_NIU_ACCESS_KEY:
-      QI_NIU_SECRET_KEY:
-      BUCKET_NAME:
+      QI_NIU_ACCESS_KEY: OsF401ZmMlLg7SNJLjZ0XDJvvxeZKmy9T5sPPACh
+      QI_NIU_SECRET_KEY: usDlcy6xQ8XJD7tS_fVnz_-_h9sYeH7Fox2s9fBw
+      BUCKET_NAME: mpg-mini
       # 七牛域名，例如：https://image.qiuhuiyi.cn
-      QI_NIU_DOMAIN:
+      QI_NIU_DOMAIN: http://mpg.qiniu.sentgon.com
       # 云片配置信息
       YUN_PIAN_KEY:
       # 阿里云配置信息
@@ -43,17 +45,17 @@ services:
       ALI_ENDPOINT:
       ALI_ENDPOINT_ID:
       # 发送邮件的配置前往send cloud注册
-      SEND_CLOUD_API_USER:
-      SEND_CLOUD_APP_KEY:
+      SEND_CLOUD_API_USER: linfan_test_Z5mz5J
+      SEND_CLOUD_APP_KEY: 067ccb90de5caf9ea64c8c8cf2ac77e0
 
   phpmyadmin:
       image: phpmyadmin/phpmyadmin
-      container_name: phpmyadmin
+      container_name: mpg_phpmyadmin
       environment:
        - PMA_ARBITRARY=1
       restart: always
       ports:
-       - 8080:80
+       - 8012:80
       volumes:
        - /sessions
       networks:
@@ -63,9 +65,11 @@ services:
     depends_on:
       - laravel
       - db
+    container_name: mpg_nginx
+    restart: always
     image: oubingbing/wechat_alliance_nginx:alpine
     ports:
-      - "8000:8000"
+      - "8011:8000"
     networks:
       - laravel_net
 
